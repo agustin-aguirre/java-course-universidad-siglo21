@@ -3,12 +3,15 @@ package Factories;
 import Models.Book;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Random;
 import java.util.UUID;
 
 
 public class FixedDataSizeBookFactory implements BookFactory {
 
     private final int dataSize = 10;
+    private final Random random = new Random();
 
     private final String[] authors = {
         "Gabriel García Márquez",
@@ -49,7 +52,11 @@ public class FixedDataSizeBookFactory implements BookFactory {
         1963
     };
 
-    public ArrayList<Book> create(int amount) throws IllegalArgumentException {
+    public Book create() {
+        return createBookWithDataAtIndex(random.nextInt(dataSize));
+    }
+
+    public Collection<Book> create(int amount) throws IllegalArgumentException {
         if (amount < 0) {
             throw new IllegalArgumentException("Amount cannot be less than 0");
         }

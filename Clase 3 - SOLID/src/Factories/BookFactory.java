@@ -2,8 +2,9 @@ package Factories;
 
 import Models.Book;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
 public interface BookFactory {
-    ArrayList<Book> create(int amount) throws IllegalArgumentException;
+    Book create();
+    Collection<Book> create(int amount) throws IllegalArgumentException;
 }
