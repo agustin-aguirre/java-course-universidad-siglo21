@@ -1,7 +1,7 @@
 import Factories.FixedDataSizeBookFactory;
 import Repositories.ArrayBookRepository;
 import Repositories.ArrayListBookRepository;
-import Services.LoanManager;
+import Services.SimpleLoanManager;
 
 public class Main {
 
@@ -18,14 +18,14 @@ public class Main {
     private static void runCRUDDemoWithArray() {
         var factory = new FixedDataSizeBookFactory();
         var repo = new ArrayBookRepository(factory);
-        var loanManager = new LoanManager(repo);
+        var loanManager = new SimpleLoanManager(repo);
     }
 
 
     private static void runCRUDDemoWithArrayList() {
         var factory = new FixedDataSizeBookFactory();
         var repo = new ArrayListBookRepository(factory);
-        var loanManager = new LoanManager(repo);
+        var loanManager = new SimpleLoanManager(repo);
 
     }
 }
