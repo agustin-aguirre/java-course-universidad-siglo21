@@ -1,3 +1,9 @@
+package Repositories;
+
+import Factories.BookFactory;
+import Models.Book;
+import Services.Exceptions.LibraryException;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
@@ -10,7 +16,7 @@ public class ArrayBookRepository implements BookRepository {
     private int firstEmptyPosition = 0;
 
     public ArrayBookRepository(BookFactory bookFactory) {
-        books = bookFactory.create(10).toArray(new Book[10]);
+        books = bookFactory.create(10).toArray(Book[]::new);
     }
 
     @Override

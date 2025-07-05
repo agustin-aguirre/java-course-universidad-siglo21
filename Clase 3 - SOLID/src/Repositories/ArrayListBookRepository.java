@@ -1,4 +1,4 @@
-// ● Repositorio de Libros (BookRepository)
+package Repositories;// ● Repositorio de Libros (Repositories.BookRepository)
 //  ○ Debe ser una interfaz con métodos para:
 //      ■ Agregar un libro (validando ISBN único).
 //      ■ Eliminar un libro por ISBN.
@@ -6,9 +6,12 @@
 //      ■ Listar todos los libros.
 //
 //  ○ Implementar dos versiones usando:
-//      ■ ArrayList (ArrayListBookRepository)
-//      ■ Arreglo estático (ArrayBookRepository, con tamaño fijo y manejo de límites).
+//      ■ ArrayList (Repositories.ArrayListBookRepository)
+//      ■ Arreglo estático (Repositories.ArrayBookRepository, con tamaño fijo y manejo de límites).
 
+
+import Factories.BookFactory;
+import Models.Book;
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;

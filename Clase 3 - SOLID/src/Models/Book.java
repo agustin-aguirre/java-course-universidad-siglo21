@@ -1,4 +1,4 @@
-// ● Libro (Book)
+package Models;// ● Libro (Models.Book)
 //  ○ Atributos:
 //      ■ ISBN (String, único)
 //      ■ Título (String)
@@ -25,8 +25,6 @@ public class Book {
         setAuthor(author);
         setYearPublished(yearPublished);
     }
-
-
 
 
     public String getIsbn() {
@@ -72,7 +70,7 @@ public class Book {
 
     @Override
     public String toString() {
-        String template = "[Book: (ISBN=%s) (Title=%s) (Author=%s) (Year Published=%d)";
+        String template = "[Models.Book: (ISBN=%s) (Title=%s) (Author=%s) (Year Published=%d)";
         return String.format(template, isbn, title, author, yearPublished);
     }
 }

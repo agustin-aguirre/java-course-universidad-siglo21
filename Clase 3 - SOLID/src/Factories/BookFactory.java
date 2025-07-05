@@ -1,3 +1,7 @@
+package Factories;
+
+import Models.Book;
+
 import java.util.ArrayList;
 
 public interface BookFactory {
