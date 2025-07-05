@@ -12,12 +12,11 @@ package Models;// ● Libro (Models.Book)
 
 public class BookBase implements Book {
 
-    protected String isbn;
-    protected String title;
-    protected String author;
-    protected int yearPublished;
-    protected boolean isAvailable = true;
-
+    private String isbn;
+    private String title;
+    private String author;
+    private int yearPublished;
+    private boolean isAvailable = true;
 
     public BookBase(String isbn, String title, String author, int yearPublished) {
         setIsbn(isbn);
@@ -26,14 +25,14 @@ public class BookBase implements Book {
         setYearPublished(yearPublished);
     }
 
-
     @Override
     public String getIsbn() {
         return isbn;
     }
 
     @Override
-    public void setIsbn(String isbn) {
+    public void setIsbn(String isbn) throws IllegalArgumentException {
+        assertStringFieldIsValid(isbn, "ISBN");
         this.isbn = isbn;
     }
 
@@ -43,7 +42,8 @@ public class BookBase implements Book {
     }
 
     @Override
-    public void setTitle(String title) {
+    public void setTitle(String title) throws IllegalArgumentException {
+        assertStringFieldIsValid(title, "Title");
         this.title = title;
     }
 
@@ -53,7 +53,8 @@ public class BookBase implements Book {
     }
 
     @Override
-    public void setAuthor(String author) {
+    public void setAuthor(String author) throws IllegalArgumentException {
+        assertStringFieldIsValid(author, "Author");
         this.author = author;
     }
 
@@ -63,7 +64,10 @@ public class BookBase implements Book {
     }
 
     @Override
-    public void setYearPublished(int yearPublished) {
+    public void setYearPublished(int yearPublished) throws IllegalArgumentException{
+        if (yearPublished < 0) {
+            throw new IllegalArgumentException("Year cannot be less than 0");
+        }
         this.yearPublished = yearPublished;
     }
 
@@ -81,5 +85,12 @@ public class BookBase implements Book {
     public String toString() {
         String template = "[Models.Book: (ISBN=%s) (Title=%s) (Author=%s) (Year Published=%d)";
         return String.format(template, isbn, title, author, yearPublished);
+    }
+
+
+    private void assertStringFieldIsValid(String value, String fieldName) {
+        if (value == null || value.isEmpty()) {
+            throw new IllegalArgumentException(String.format("%s is not valid", fieldName));
+        }
     }
 }
