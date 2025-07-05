@@ -71,6 +71,11 @@ public class FixedDataSizeBookFactory implements BookFactory {
     }
 
     private Book createBookWithDataAtIndex(int index) {
-        return new BookBase(UUID.randomUUID().toString(), titles[index], authors[index], publicationYears[index]);
+        return new BookBase(
+                UUID.randomUUID().toString(),
+                titles[index],
+                authors[index],
+                publicationYears[index]
+        );
     }
 }
