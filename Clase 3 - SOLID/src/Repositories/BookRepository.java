@@ -11,5 +11,3 @@ public interface BookRepository {
     Collection<Book> getAll();
     boolean delete(String isbn);
 }
-
-

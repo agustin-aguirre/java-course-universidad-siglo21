@@ -12,11 +12,11 @@ package Models;// ● Libro (Models.Book)
 
 public class BookBase implements Book {
 
-    private String isbn;
-    private String title;
-    private String author;
-    private int yearPublished;
-    private boolean isAvailable = true;
+    protected String isbn;
+    protected String title;
+    protected String author;
+    protected int yearPublished;
+    protected boolean isAvailable = true;
 
 
     public BookBase(String isbn, String title, String author, int yearPublished) {
@@ -39,7 +39,6 @@ public class BookBase implements Book {
 
     @Override
     public String getTitle() {
-
         return title;
     }
 
