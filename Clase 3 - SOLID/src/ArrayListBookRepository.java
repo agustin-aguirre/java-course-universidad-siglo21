@@ -13,6 +13,7 @@
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ArrayListBookRepository implements BookRepository {
 
@@ -28,6 +29,7 @@ public class ArrayListBookRepository implements BookRepository {
         if (exists) {
             throw new KeyAlreadyExistsException();
         }
+        newBook.setIsbn(UUID.randomUUID().toString());
         books.addLast(newBook);
     }
 

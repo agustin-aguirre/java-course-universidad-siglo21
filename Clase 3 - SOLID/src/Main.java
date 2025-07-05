@@ -1,5 +1,28 @@
 public class Main {
 
+    public static void main(String[] args) {
+        System.out.println("==========ARRAY DEMO=============");
+        runCRUDDemoWithArray();
+        System.out.println("===============================");
+
+        System.out.println("==========ARRAYLIST DEMO=============");
+        runCRUDDemoWithArrayList();
+        System.out.println("===============================");
+    }
+
+    private static void runCRUDDemoWithArray() {
+        var factory = new FixedDataSizeBookFactory();
+        var repo = new ArrayBookRepository(factory);
+        var loanManager = new LoanManager(repo);
+    }
+
+
+    private static void runCRUDDemoWithArrayList() {
+        var factory = new FixedDataSizeBookFactory();
+        var repo = new ArrayListBookRepository(factory);
+        var loanManager = new LoanManager(repo);
+
+    }
 }
 
 

@@ -1,5 +1,6 @@
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.UUID;
 
 public class ArrayBookRepository implements BookRepository {
 
@@ -16,6 +17,7 @@ public class ArrayBookRepository implements BookRepository {
         if (booksVirtualLength == books.length - 1) {
             books = Arrays.copyOf(books, booksVirtualLength + 100);
         }
+        newBook.setIsbn(UUID.randomUUID().toString());
         books[firstEmptyPosition] = newBook;
         booksVirtualLength += 1;
         for (int i = (firstEmptyPosition + 1); i < books.length; i++) {
