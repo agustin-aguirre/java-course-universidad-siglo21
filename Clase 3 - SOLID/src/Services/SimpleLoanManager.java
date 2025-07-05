@@ -6,9 +6,8 @@ package Services;
 //        ■Validar reglas (ej: no prestar un libro ya prestado).
 
 import Repositories.BookRepository;
-import Services.Exceptions.BookAlreadyLendedException;
+import Services.Exceptions.BookLendedException;
 import Services.Exceptions.BookNotFoundException;
-import Services.Exceptions.LibraryException;
 
 public class SimpleLoanManager implements LoanManager {
 
@@ -22,11 +21,11 @@ public class SimpleLoanManager implements LoanManager {
     }
 
     @Override
-    public void lendBook(String isbn) throws LibraryException {
+    public void lendBook(String isbn) throws BookNotFoundException, BookLendedException {
         bookRepo.get(isbn).ifPresentOrElse(
             book -> {
                 if (!book.isAvailable()) {
-                    throw new BookAlreadyLendedException(String.format(ALREADY_LENDED_TEMPLATE_MSG, book.getIsbn()));
+                    throw new BookLendedException(String.format(ALREADY_LENDED_TEMPLATE_MSG, book.getIsbn()));
                 }
                 book.setIsAvailable(false);
             },
@@ -37,7 +36,7 @@ public class SimpleLoanManager implements LoanManager {
     }
 
     @Override
-    public void returnBook(String isbn) {
+    public void returnBook(String isbn) throws BookNotFoundException {
         bookRepo.get(isbn).ifPresentOrElse(
             book -> {
                 if (!book.isAvailable()) {
