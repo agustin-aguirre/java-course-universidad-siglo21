@@ -20,7 +20,7 @@ public class ArrayListBookRepository implements BookRepository {
     private final ArrayList<Book> books;
 
     public ArrayListBookRepository(BookFactory bookFactory) {
-        books = new ArrayList<Book>(bookFactory.Create(10));
+        books = new ArrayList<Book>(bookFactory.create(10));
     }
 
     @Override

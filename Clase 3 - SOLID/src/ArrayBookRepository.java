@@ -9,7 +9,7 @@ public class ArrayBookRepository implements BookRepository {
     private int firstEmptyPosition = 0;
 
     public ArrayBookRepository(BookFactory bookFactory) {
-        books = bookFactory.Create(10).toArray(new Book[10]);
+        books = bookFactory.create(10).toArray(new Book[10]);
     }
 
     @Override

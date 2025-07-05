@@ -1,5 +1,5 @@
 import java.util.ArrayList;
 
 public interface BookFactory {
-    ArrayList<Book> Create(int amount) throws IllegalArgumentException;
+    ArrayList<Book> create(int amount) throws IllegalArgumentException;
 }

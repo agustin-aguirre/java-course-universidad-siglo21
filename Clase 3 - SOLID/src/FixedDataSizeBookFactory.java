@@ -45,7 +45,7 @@ public class FixedDataSizeBookFactory implements BookFactory {
         1963
     };
 
-    public ArrayList<Book> Create(int amount) throws IllegalArgumentException {
+    public ArrayList<Book> create(int amount) throws IllegalArgumentException {
         if (amount < 0) {
             throw new IllegalArgumentException("Amount cannot be less than 0");
         }
