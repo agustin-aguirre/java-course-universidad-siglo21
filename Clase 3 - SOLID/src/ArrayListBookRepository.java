@@ -12,6 +12,7 @@
 
 import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class ArrayListBookRepository implements BookRepository {
     }
 
     @Override
-    public Iterable<Book> getAll() {
+    public Collection<Book> getAll() {
         return books;
     }
 

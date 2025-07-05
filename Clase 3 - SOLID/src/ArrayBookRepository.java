@@ -1,4 +1,5 @@
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -41,7 +42,7 @@ public class ArrayBookRepository implements BookRepository {
     }
 
     @Override
-    public Iterable<Book> getAll() {
+    public Collection<Book> getAll() {
         return Arrays.asList(books);
     }
 
