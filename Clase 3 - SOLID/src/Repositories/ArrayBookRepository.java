@@ -75,7 +75,13 @@ public class ArrayBookRepository implements BookRepository {
 
     private int indexOf(String isbn) {
         int targetIndex = -1;
-        for (int i = 0; i < booksVirtualLength; i++) {
+        int i = -1;
+        while (i < booksVirtualLength) {
+            i += 1;
+            var current = books[i];
+            if (current == null) {
+                continue;
+            }
             if (books[i].getIsbn().equals(isbn)) {
                 targetIndex = i;
                 break;
