@@ -1,10 +1,8 @@
 package Models;
 
 import Exceptions.InvalidBookFieldException;
-import Validators.IntBiggerThanOrEqualToCeroValidator;
-import Validators.IsbnValidator;
-import Validators.StringNotNullNorEmptyValidator;
-import Validators.Validator;
+
+import java.util.function.Predicate;
 
 public class Book {
 
@@ -29,7 +27,7 @@ public class Book {
     }
 
     public void setIsbn(String isbn) throws IllegalArgumentException {
-        assertFieldIsValid(isbn, new IsbnValidator(), "ISBN");
+        assertStringFieldIsValid(isbn, "ISBN");
         this.isbn = isbn;
     }
 
@@ -38,7 +36,7 @@ public class Book {
     }
 
     public void setTitle(String title) throws IllegalArgumentException {
-        assertFieldIsValid(title, new StringNotNullNorEmptyValidator(), "Title");
+        assertStringFieldIsValid(title, "Title");
         this.title = title;
     }
 
@@ -47,7 +45,7 @@ public class Book {
     }
     
     public void setAuthor(String author) throws IllegalArgumentException {
-        assertFieldIsValid(author, new StringNotNullNorEmptyValidator(), "Author");
+        assertStringFieldIsValid(author, "Author");
         this.author = author;
     }
     
@@ -56,7 +54,7 @@ public class Book {
     }
     
     public void setYearPublished(int yearPublished) throws IllegalArgumentException{
-        assertFieldIsValid(yearPublished, new IntBiggerThanOrEqualToCeroValidator(), "YearPublished");
+        assertFieldIsValid(yearPublished, (year) -> year >= 0, "YearPublished");
         this.yearPublished = yearPublished;
     }
     
@@ -72,8 +70,12 @@ public class Book {
         return String.format("%s{%s}", this.getClass().getSimpleName(), getFieldsString());
     }
 
-    protected <T> void assertFieldIsValid(T value, Validator<T> validator, String fieldName) {
-        if (!validator.check(value)) {
+    protected void assertStringFieldIsValid(String value, String fieldName) {
+        assertFieldIsValid(value, (s) -> s != null && !s.isEmpty(), fieldName);
+    }
+
+    protected <T> void assertFieldIsValid(T value, Predicate<T> predicate, String fieldName) {
+        if (!predicate.test(value)) {
             throw new InvalidBookFieldException(String.format(ILLEGAL_ARGUMENT_TEMPLATE_MSG, value.toString(), fieldName));
         }
     }

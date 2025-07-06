@@ -10,10 +10,10 @@ import java.util.Optional;
 
 public class ArrayListBookRepository implements BookRepository {
 
-    private final ArrayList<Book> books;
+    private ArrayList<Book> books;
 
-    public ArrayListBookRepository(Collection<Book> initialBooks) {
-        books = new ArrayList<>(initialBooks);
+    public ArrayListBookRepository() {
+        books = new ArrayList<>();
     }
 
     @Override

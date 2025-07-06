@@ -2,15 +2,20 @@ import Exceptions.*;
 import Factories.BookFactory;
 import Factories.EBookFactory;
 import Factories.FixedDataSizeBookFactory;
+import Filters.AuthorFilter;
+import Filters.AvailabilityFilter;
 import Models.Book;
+import Models.EBook;
 import Printers.LibraryReportPrinter;
 import Printers.ReportPrinter;
 import Repositories.ArrayBookRepository;
 import Repositories.ArrayListBookRepository;
 import Repositories.BookRepository;
 import Services.Finders.SimpleBookFinder;
+import Services.LoanManagers.LoanManager;
 import Services.LoanManagers.SimpleLoanManager;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -18,101 +23,132 @@ import java.util.function.Function;
 public class Main {
 
     public static void main(String[] args) {
-        var bookFactory = new FixedDataSizeBookFactory();
-        var ebookFactory = new EBookFactory();
+        Book[] books = {
+                new Book("1", "Cien años de soledad", "Gabriel García Márquez", 1967),
+                new EBook("2", "Orgullo y prejuicio", "Jane Austen", 1813, "pdf"),
+                new Book("3", "Kafka en la orilla", "Haruki Murakami", 2002),
+                new EBook("4", "La casa de los espíritus", "Isabel Allende", 1982, "pdf"),
+                new Book("5", "1984", "George Orwell", 1949),
+                /// ///
+                new EBook("6", "Harry Potter y la piedra filosofal", "J.K. Rowling", 1997, "txt"),
+                new Book("7", "El viejo y el mar", "Ernest Hemingway", 1952),
+                new EBook("8", "Ficciones", "Jorge Luis Borges", 1944, "docx"),
+                new Book("9", "La metamorfosis", "Franz Kafka", 1915),
+                new EBook("10", "La ciudad y los perros", "Mario Vargas Llosa", 1963, "docx"),
+        };
+
         var printer = new LibraryReportPrinter();
 
-        // demo with array repository
-        var arrayDemoLibrary = createDemoLibrary(new ArrayBookRepository(bookFactory.create(50)));
-        runLibraryDemo(arrayDemoLibrary, ebookFactory, printer, "===============Array===============");
+        printer.println("\n* REPOSITORIES ADD ELEMENTS DEMO:");
+        var arrayRepo = new ArrayBookRepository();
+        var arraylistRepo = new ArrayListBookRepository();
 
-        // demo with arrayList repository
-        var arrayListDemoLibrary = createDemoLibrary(new ArrayListBookRepository(ebookFactory.create(50)));
-        runLibraryDemo(arrayListDemoLibrary, bookFactory, printer, "=============ArrayList=============");
-    }
-
-    private static Library createDemoLibrary(BookRepository bookRepo) {
-        return new DemoLibrary(
-                bookRepo,
-                new SimpleBookFinder(bookRepo),
-                new SimpleLoanManager(bookRepo)
-        );
-    }
-
-    private static void runLibraryDemo(Library library, BookFactory factory, ReportPrinter printer, String header) {
-        printer.println(header);
-
-        printer.println("Showing all books from Jorge Luis Borges:");
-        var borgesBooks = library.getBooksFromAuthor("Jorge Luis Borges").toArray(Book[]::new);
-        printer.println(borgesBooks);
-
-        printer.println("Lending the first 3 of them...");
-        library.lendBook(borgesBooks[0].getIsbn());
-        library.lendBook(borgesBooks[1].getIsbn());
-        library.lendBook(borgesBooks[2].getIsbn());
-        var lendedBooks = library.getBooksByAvailability(false).toArray(Book[]::new);
-        printer.println(lendedBooks);
-
-        var book = borgesBooks[0];
-        printer.printlnf("Attempting to lend book with ISBN: %s (the first one):", book.getIsbn());
+        for (int i = 0; i < 5; i++) {
+            arrayRepo.add(books[i]);
+        }
+        printer.println(arrayRepo.getAll());
         try {
-            library.lendBook(book.getIsbn());
-        }
-        catch (BookAlreadyLendedException e) {
-            printer.printErr(e);
-        }
-
-        printer.println("Rerturning the book now...");
-        library.returnBook(book.getIsbn());
-        printer.println(book.toString());
-
-        printer.println("Deleting all but the first three...");
-        String deletedBookIsbn = borgesBooks[3].getIsbn();
-        for (Book b: Arrays.stream(borgesBooks).skip(3).toList()) {
-            library.deleteBook(b.getIsbn());
-        }
-        borgesBooks = library.getBooksFromAuthor("Jorge Luis Borges").toArray(Book[]::new);
-        printer.println(borgesBooks);
-
-        printer.printlnf("Attempting to delete an already deleted isbn: %s", deletedBookIsbn);
-        try {
-            library.deleteBook(deletedBookIsbn);
-        }
-        catch (BookNotFoundException e) {
-            printer.printErr(e);
-        }
-
-        Book newRandomBook = factory.create();
-        printer.printlnf("Adding new book: %s", newRandomBook.toString());
-        library.addBook(newRandomBook);
-        printer.println("Trying to add the same book...");
-        try {
-            library.addBook(newRandomBook);
+            arrayRepo.add(books[0]);
         }
         catch (DuplicatedBookException e) {
             printer.printErr(e);
         }
 
-        printer.println("Trying to create books with invalid field values:");
-        printer.println("\tISBN empty: ");
-        trySetField(newRandomBook, b -> b::setIsbn, "", printer);
-        printer.println("\tAuthor empty: ");
-        trySetField(newRandomBook, b -> b::setAuthor, "", printer);
-        printer.println("\tTitle empty: ");
-        trySetField(newRandomBook, b -> b::setTitle, "", printer);
-        printer.println("\tPublishing Year = -1: ");
-        trySetField(newRandomBook, b -> b::setYearPublished, -1, printer);
-
-        printer.println("===================================\n");
-    }
-
-    private static <T> void trySetField(Book book, Function<Book, Consumer<T>> objectSetter, T value, ReportPrinter printer) {
-        try {
-            var setter = objectSetter.apply(book);
-            setter.accept(value);
+        for (int i = 5; i < 10; i++) {
+            arraylistRepo.add(books[i]);
         }
-        catch (InvalidBookFieldException e) {
+        printer.println(arraylistRepo.getAll());
+        try {
+            arraylistRepo.add(books[5]);
+        }
+        catch (DuplicatedBookException e) {
             printer.printErr(e);
         }
+
+
+        printer.println("\n* DELETE DEMO:");
+        printer.println("** ARRAY REPO");
+        arrayRepo.delete("1");
+        printer.println(arrayRepo.getAll());
+        try {
+            arrayRepo.delete("10");
+        }
+        catch (BookNotFoundException e) {
+            printer.printErr(e);
+        }
+
+        printer.println("** ARRAYLIST REPO");
+        arraylistRepo.delete("6");
+        printer.println(arraylistRepo.getAll());
+        try {
+            arraylistRepo.delete("1");
+        }
+        catch (BookNotFoundException e) {
+            printer.printErr(e);
+        }
+
+        printer.println("** GET BY ISBN:");
+        printer.println(arrayRepo.get("5").toString());
+        printer.println(arraylistRepo.get("10").toString());
+
+
+        printer.println("\n* LOANS");
+        printer.println("** ARRAY REPO:");
+        var loanManager1 = new SimpleLoanManager(arrayRepo);
+        printer.println("Lending book with isbn 2");
+        loanManager1.lendBook("2");
+        try {
+            loanManager1.lendBook("2");
+        }
+        catch (BookAlreadyLendedException e) {
+            printer.printErr(e);
+        }
+        try {
+            loanManager1.lendBook("10");
+        }
+        catch (BookNotFoundException e) {
+            printer.printErr(e);
+        }
+
+        printer.println("** ARRAYLIST REPO:");
+        var loanManager2 = new SimpleLoanManager(arraylistRepo);
+        printer.println("Lending book with isbn 7");
+        loanManager2.lendBook("7");
+        try {
+            loanManager2.lendBook("7");
+        }
+        catch (BookAlreadyLendedException e) {
+            printer.printErr(e);
+        }
+        try {
+            loanManager2.lendBook("1");
+        }
+        catch (BookNotFoundException e) {
+            printer.printErr(e);
+        }
+
+
+        printer.println("\n* ADVANCED FILTERING");
+        printer.println("** ARRAY REPO:");
+        var finder1 = new SimpleBookFinder(arrayRepo);
+        printer.println("** Book with isbn 3:");
+        printer.println(finder1.findBookWithIsbn("3").get().toString());
+        printer.println("** All George Orwell books:");
+        printer.println(finder1.filterBooks(new AuthorFilter("George Orwell")));
+        printer.println("** All available books:");
+        printer.println(finder1.filterBooks(new AvailabilityFilter(true)));
+        printer.println("** All lended books:");
+        printer.println(finder1.filterBooks(new AvailabilityFilter(false)));
+
+        printer.println("** ARRAYLIST REPO:");
+        var finder2 = new SimpleBookFinder(arraylistRepo);
+        printer.println("** Book with isbn 7:");
+        printer.println(finder2.findBookWithIsbn("7").get().toString());
+        printer.println("** All Jorge Luis Borges books:");
+        printer.println(finder2.filterBooks(new AuthorFilter("Jorge Luis Borges")));
+        printer.println("** All available books:");
+        printer.println(finder2.filterBooks(new AvailabilityFilter(true)));
+        printer.println("** All lended books:");
+        printer.println(finder2.filterBooks(new AvailabilityFilter(false)));
     }
 }

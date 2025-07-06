@@ -1,9 +1,10 @@
 package Models;
 
-import Validators.FormatValidator;
+import java.util.Arrays;
 
 public class EBook extends Book {
 
+    private static final String[] SUPPORTED_FORMATS = { "pdf", "txt", "docx" };
     private String format;
 
     public EBook(String isbn, String title, String author, int yearPublished, String format) {
@@ -16,7 +17,8 @@ public class EBook extends Book {
     }
 
     public void setFormat(String format) {
-        assertFieldIsValid(format, new FormatValidator(), "Format");
+        assertStringFieldIsValid(format, "Format");
+        assertFieldIsValid(format, (s) -> Arrays.stream(SUPPORTED_FORMATS).toList().contains(s.toLowerCase()), "Format");
         this.format = format;
     }
 

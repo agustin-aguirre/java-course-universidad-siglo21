@@ -15,8 +15,8 @@ public class ArrayBookRepository implements BookRepository {
     private int booksVirtualLength = 0;
     private int firstEmptyPosition = 0;
 
-    public ArrayBookRepository(Collection<Book> initialBooks) {
-        var initialBooksArray = initialBooks.toArray(Book[]::new);
+    public ArrayBookRepository() {
+        var initialBooksArray = new Book[10];
         int initialBooksArrayLength = initialBooksArray.length;
         books = Arrays.copyOf(initialBooksArray, initialBooksArrayLength + 10);
         booksVirtualLength = initialBooksArrayLength;
@@ -63,7 +63,7 @@ public class ArrayBookRepository implements BookRepository {
     public void delete(String isbn) {
         int targetIndex = indexOf(isbn);
         if (targetIndex == -1) {
-            throw new BookNotFoundException("Book with isbn %s is not registered or does not exist.");
+            throw new BookNotFoundException(String.format("Book with isbn %s is not registered or does not exist.", isbn));
         }
         books[targetIndex] = null;
         booksVirtualLength -= 1;
