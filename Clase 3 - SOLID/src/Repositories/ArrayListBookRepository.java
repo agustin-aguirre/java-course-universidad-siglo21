@@ -2,7 +2,6 @@ package Repositories;
 
 import Exceptions.BookNotFoundException;
 import Exceptions.DuplicatedBookException;
-import Factories.BookFactory;
 import Models.Book;
 
 import java.util.ArrayList;

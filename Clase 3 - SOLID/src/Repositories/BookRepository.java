@@ -1,6 +1,5 @@
 package Repositories;
 
-import Filters.BookFilter;
 import Models.Book;
 
 import java.util.Collection;
