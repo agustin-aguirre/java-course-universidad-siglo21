@@ -1,7 +1,7 @@
 package Services.LoanManagers;
 
 import Repositories.BookRepository;
-import Exceptions.BookLendedException;
+import Exceptions.BookAlreadyLendedException;
 import Exceptions.BookNotFoundException;
 
 public class SimpleLoanManager implements LoanManager {
@@ -20,7 +20,7 @@ public class SimpleLoanManager implements LoanManager {
         bookRepo.get(isbn).ifPresentOrElse(
             book -> {
                 if (!book.isAvailable()) {
-                    throw new BookLendedException(String.format(ALREADY_LENDED_TEMPLATE_MSG, book.getIsbn()));
+                    throw new BookAlreadyLendedException(String.format(ALREADY_LENDED_TEMPLATE_MSG, book.getIsbn()));
                 }
                 book.setIsAvailable(false);
             },
