@@ -1,5 +1,6 @@
 package Models;
 
+import Exceptions.InvalidBookFieldException;
 import Validators.IntBiggerThanOrEqualToCeroValidator;
 import Validators.StringNotNullNorEmptyValidator;
 import Validators.Validator;
@@ -78,12 +79,12 @@ public class BookBase implements Book {
 
     @Override
     public String toString() {
-        return String.format(TO_STRING_TEMPLATE, isbn, title, author, yearPublished);
+        return String.format(TO_STRING_TEMPLATE, isbn, title, author, yearPublished, isAvailable);
     }
 
     private <T> void assertFieldIsValid(T value, Validator<T> validator, String fieldName) {
         if (!validator.check(value)) {
-            throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TEMPLATE_MSG, value.toString(), fieldName));
+            throw new InvalidBookFieldException(String.format(ILLEGAL_ARGUMENT_TEMPLATE_MSG, value.toString(), fieldName));
         }
     }
 }

@@ -1,9 +1,9 @@
 package Repositories;
 
+import Exceptions.BookNotFoundException;
+import Exceptions.DuplicatedBookException;
 import Factories.BookFactory;
 import Models.Book;
-import Repositories.Exceptions.DuplicatedKeyException;
-import Repositories.Exceptions.KeyNotFoundException;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,7 +20,7 @@ public class ArrayListBookRepository implements BookRepository {
     @Override
     public void add(Book newBook) {
         if (get(newBook.getIsbn()).isPresent()) {
-            throw new DuplicatedKeyException("");
+            throw new DuplicatedBookException(String.format("Attempted to add a book with an already registered isbn: %s", newBook.getIsbn()));
         }
         books.addLast(newBook);
     }
@@ -41,7 +41,7 @@ public class ArrayListBookRepository implements BookRepository {
     public void delete(String isbn) {
         boolean success = books.removeIf(book -> book.getIsbn().equals(isbn));
         if (!success) {
-            throw new KeyNotFoundException("");
+            throw new BookNotFoundException("Book with isbn %s is not registered or does not exist.");
         }
     }
 }

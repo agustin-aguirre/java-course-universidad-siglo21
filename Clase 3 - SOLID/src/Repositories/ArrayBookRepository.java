@@ -1,9 +1,9 @@
 package Repositories;
 
+import Exceptions.BookNotFoundException;
+import Exceptions.DuplicatedBookException;
 import Factories.BookFactory;
 import Models.Book;
-import Repositories.Exceptions.DuplicatedKeyException;
-import Repositories.Exceptions.KeyNotFoundException;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,12 +22,10 @@ public class ArrayBookRepository implements BookRepository {
     @Override
     public void add(Book newBook) {
         if (get(newBook.getIsbn()).isPresent()) {
-            throw new DuplicatedKeyException("");
+            throw new DuplicatedBookException(String.format("Attempted to add a book with an already registered isbn: %s", newBook.getIsbn()));
         }
-
         books[firstEmptyPosition] = newBook;
         booksVirtualLength += 1;
-
         if (booksVirtualLength < books.length) {
             for (int i = (firstEmptyPosition + 1); i < books.length; i++) {
                 if (books[i] == null) {
@@ -63,7 +61,7 @@ public class ArrayBookRepository implements BookRepository {
     public void delete(String isbn) {
         int targetIndex = indexOf(isbn);
         if (targetIndex == -1) {
-            throw new KeyNotFoundException("");
+            throw new BookNotFoundException("Book with isbn %s is not registered or does not exist.");
         }
         books[targetIndex] = null;
         booksVirtualLength -= 1;
