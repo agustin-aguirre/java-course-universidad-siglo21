@@ -7,6 +7,7 @@ import Models.EBook;
 import Printers.LibraryReportPrinter;
 import Repositories.ArrayBookRepository;
 import Repositories.ArrayListBookRepository;
+import Repositories.BookRepository;
 import Services.Finders.SimpleBookFinder;
 import Services.LoanManagers.SimpleLoanManager;
 
@@ -36,6 +37,22 @@ public class Main {
         for (int i = 0; i < 5; i++) {
             arrayRepo.add(books[i]);
         }
+        for (int i = 5; i < 10; i++) {
+            arraylistRepo.add(books[i]);
+        }
+
+        repositoryAddElementsDemo(arrayRepo, books, arraylistRepo, printer);
+
+        //repositoriesDeleteElementsDemo(printer, arrayRepo, arraylistRepo);
+
+        //loansDemo(printer, arrayRepo, arraylistRepo);
+
+        //advancedFilteringDemo(printer, arrayRepo, arraylistRepo);
+    }
+
+    private static void repositoryAddElementsDemo(BookRepository arrayRepo, Book[] books, BookRepository arraylistRepo, LibraryReportPrinter printer) {
+        printer.println("** ARRAY REPO");
+        printer.println(arrayRepo.get(books[0].getIsbn()).toString());
         printer.println(arrayRepo.getAll());
         try {
             arrayRepo.add(books[0]);
@@ -43,10 +60,10 @@ public class Main {
         catch (DuplicatedBookException e) {
             printer.printErr(e);
         }
-
-        for (int i = 5; i < 10; i++) {
-            arraylistRepo.add(books[i]);
-        }
+        var book = arrayRepo.get(books[4].getIsbn());
+        printer.println(book.get().toString());
+        printer.println("");
+        printer.println("** ARRAYLIST REPO");
         printer.println(arraylistRepo.getAll());
         try {
             arraylistRepo.add(books[5]);
@@ -54,8 +71,11 @@ public class Main {
         catch (DuplicatedBookException e) {
             printer.printErr(e);
         }
+        book = arraylistRepo.get(books[9].getIsbn());
+        printer.println(book.get().toString());
+    }
 
-
+    private static void repositoriesDeleteElementsDemo(LibraryReportPrinter printer, BookRepository arrayRepo, BookRepository arraylistRepo) {
         printer.println("\n* DELETE DEMO:");
         printer.println("** ARRAY REPO");
         arrayRepo.delete("1");
@@ -80,8 +100,9 @@ public class Main {
         printer.println("** GET BY ISBN:");
         printer.println(arrayRepo.get("5").toString());
         printer.println(arraylistRepo.get("10").toString());
+    }
 
-
+    private static void loansDemo(LibraryReportPrinter printer, BookRepository arrayRepo, BookRepository arraylistRepo) {
         printer.println("\n* LOANS");
         printer.println("** ARRAY REPO:");
         var loanManager1 = new SimpleLoanManager(arrayRepo);
@@ -99,6 +120,9 @@ public class Main {
         catch (BookNotFoundException e) {
             printer.printErr(e);
         }
+        printer.println("Lending and returning book 3:");
+        loanManager1.lendBook("3");
+        loanManager1.returnBook("3");
 
         printer.println("** ARRAYLIST REPO:");
         var loanManager2 = new SimpleLoanManager(arraylistRepo);
@@ -116,8 +140,12 @@ public class Main {
         catch (BookNotFoundException e) {
             printer.printErr(e);
         }
+        printer.println("Lending and returning book 8:");
+        loanManager2.lendBook("8");
+        loanManager2.returnBook("8");
+    }
 
-
+    private static void advancedFilteringDemo(LibraryReportPrinter printer, BookRepository arrayRepo, BookRepository arraylistRepo) {
         printer.println("\n* ADVANCED FILTERING");
         printer.println("** ARRAY REPO:");
         var finder1 = new SimpleBookFinder(arrayRepo);
