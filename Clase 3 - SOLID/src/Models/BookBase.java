@@ -1,6 +1,13 @@
 package Models;
 
+import Validators.IntBiggerThanOrEqualToCeroValidator;
+import Validators.StringNotNullNorEmptyValidator;
+import Validators.Validator;
+
 public class BookBase implements Book {
+
+    private static final String ILLEGAL_ARGUMENT_TEMPLATE_MSG = "Passed value: %s to field: %s is not in valid";
+    private static final String TO_STRING_TEMPLATE = "[Book: (ISBN=%s) (Title=%s) (Author=%s) (YearPublished=%d) (IsAvailable=%b)]";
 
     private String isbn;
     private String title;
@@ -22,7 +29,7 @@ public class BookBase implements Book {
 
     @Override
     public void setIsbn(String isbn) throws IllegalArgumentException {
-        assertStringFieldIsValid(isbn, "ISBN");
+        assertFieldIsValid(isbn, new StringNotNullNorEmptyValidator(), "ISBN");
         this.isbn = isbn;
     }
 
@@ -33,7 +40,7 @@ public class BookBase implements Book {
 
     @Override
     public void setTitle(String title) throws IllegalArgumentException {
-        assertStringFieldIsValid(title, "Title");
+        assertFieldIsValid(title, new StringNotNullNorEmptyValidator(), "Title");
         this.title = title;
     }
 
@@ -44,7 +51,7 @@ public class BookBase implements Book {
 
     @Override
     public void setAuthor(String author) throws IllegalArgumentException {
-        assertStringFieldIsValid(author, "Author");
+        assertFieldIsValid(author, new StringNotNullNorEmptyValidator(), "Author");
         this.author = author;
     }
 
@@ -55,9 +62,7 @@ public class BookBase implements Book {
 
     @Override
     public void setYearPublished(int yearPublished) throws IllegalArgumentException{
-        if (yearPublished < 0) {
-            throw new IllegalArgumentException("Year cannot be less than 0");
-        }
+        assertFieldIsValid(yearPublished, new IntBiggerThanOrEqualToCeroValidator(), "YearPublished");
         this.yearPublished = yearPublished;
     }
 
@@ -73,14 +78,12 @@ public class BookBase implements Book {
 
     @Override
     public String toString() {
-        String template = "[Models.Book: (ISBN=%s) (Title=%s) (Author=%s) (Year Published=%d)";
-        return String.format(template, isbn, title, author, yearPublished);
+        return String.format(TO_STRING_TEMPLATE, isbn, title, author, yearPublished);
     }
 
-
-    private void assertStringFieldIsValid(String value, String fieldName) {
-        if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException(String.format("Passed value for %s is not in a valid format", fieldName));
+    private <T> void assertFieldIsValid(T value, Validator<T> validator, String fieldName) {
+        if (!validator.check(value)) {
+            throw new IllegalArgumentException(String.format(ILLEGAL_ARGUMENT_TEMPLATE_MSG, value.toString(), fieldName));
         }
     }
 }
