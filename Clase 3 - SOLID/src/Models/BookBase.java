@@ -1,14 +1,4 @@
-package Models;// ● Libro (Models.Book)
-//  ○ Atributos:
-//      ■ ISBN (String, único)
-//      ■ Título (String)
-//      ■ Autor (String)
-//      ■ Año de publicación (int)
-//      ■ Disponibilidad (boolean)
-//  ○ Métodos:
-//      ■Constructor con validación de campos obligatorios.
-//      ■Getters y Setters con validaciones (ej: año no puede ser negativo).
-
+package Models;
 
 public class BookBase implements Book {
 
@@ -90,7 +80,7 @@ public class BookBase implements Book {
 
     private void assertStringFieldIsValid(String value, String fieldName) {
         if (value == null || value.isEmpty()) {
-            throw new IllegalArgumentException(String.format("%s is not valid", fieldName));
+            throw new IllegalArgumentException(String.format("Passed value for %s is not in a valid format", fieldName));
         }
     }
 }
