@@ -1,7 +1,6 @@
 package Models;
 
 import Validators.FormatValidator;
-import Validators.StringNotNullNorEmptyValidator;
 
 public class EBook extends Book {
 
@@ -19,5 +18,10 @@ public class EBook extends Book {
     public void setFormat(String format) {
         assertFieldIsValid(format, new FormatValidator(), "Format");
         this.format = format;
+    }
+
+    @Override
+    protected String getFieldsString() {
+        return super.getFieldsString() + String.format(", Format=%s", getFormat());
     }
 }

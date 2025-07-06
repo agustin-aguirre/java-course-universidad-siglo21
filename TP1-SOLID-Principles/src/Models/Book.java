@@ -8,8 +8,8 @@ import Validators.Validator;
 
 public class Book {
 
-    private static final String ILLEGAL_ARGUMENT_TEMPLATE_MSG = "Passed value: %s to field: %s is not in valid";
-    private static final String TO_STRING_TEMPLATE = "[Book: (ISBN=%s) (Title=%s) (Author=%s) (YearPublished=%d) (IsAvailable=%b)]";
+    protected static final String ILLEGAL_ARGUMENT_TEMPLATE_MSG = "Passed value: %s to field: %s is not in valid";
+    protected static final String TO_STRING_TEMPLATE = "ISBN=%s, Title=%s, Author=%s, YearPublished=%d, IsAvailable=%b";
 
     private String isbn;
     private String title;
@@ -67,14 +67,18 @@ public class Book {
     public void setIsAvailable(boolean isAvailable) {
         this.isAvailable = isAvailable;
     }
-    
+
     public String toString() {
-        return String.format(TO_STRING_TEMPLATE, isbn, title, author, yearPublished, isAvailable);
+        return String.format("%s{%s}", this.getClass().getSimpleName(), getFieldsString());
     }
 
     protected <T> void assertFieldIsValid(T value, Validator<T> validator, String fieldName) {
         if (!validator.check(value)) {
             throw new InvalidBookFieldException(String.format(ILLEGAL_ARGUMENT_TEMPLATE_MSG, value.toString(), fieldName));
         }
+    }
+
+    protected String getFieldsString() {
+        return String.format(TO_STRING_TEMPLATE, isbn, title, author, yearPublished, isAvailable);
     }
 }
