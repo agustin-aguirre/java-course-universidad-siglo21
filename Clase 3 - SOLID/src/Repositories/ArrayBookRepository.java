@@ -3,7 +3,6 @@ package Repositories;
 import Exceptions.BookNotFoundException;
 import Exceptions.DuplicatedIsbnException;
 import Factories.BookFactory;
-import Filters.BookFilter;
 import Models.Book;
 
 import java.util.Arrays;
@@ -58,13 +57,6 @@ public class ArrayBookRepository implements BookRepository {
     @Override
     public Collection<Book> getAll() {
         return Arrays.asList(books);
-    }
-
-    @Override
-    public Collection<Book> filter(BookFilter condition) {
-        return getAll().stream()
-                .filter(condition::check)
-                .toList();
     }
 
     @Override

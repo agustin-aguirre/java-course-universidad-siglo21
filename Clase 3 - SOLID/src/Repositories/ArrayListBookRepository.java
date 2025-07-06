@@ -3,7 +3,6 @@ package Repositories;
 import Exceptions.BookNotFoundException;
 import Exceptions.DuplicatedIsbnException;
 import Factories.BookFactory;
-import Filters.BookFilter;
 import Models.Book;
 
 import java.util.ArrayList;
@@ -36,13 +35,6 @@ public class ArrayListBookRepository implements BookRepository {
     @Override
     public Collection<Book> getAll() {
         return books;
-    }
-
-    @Override
-    public Collection<Book> filter(BookFilter condition) {
-        return getAll().stream()
-                .filter(condition::check)
-                .toList();
     }
 
     @Override
