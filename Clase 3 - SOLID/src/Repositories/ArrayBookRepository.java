@@ -47,12 +47,9 @@ public class ArrayBookRepository implements BookRepository {
     @Override
     public Optional<Book> get(String isbn) {
         Optional<Book> result = Optional.empty();
-        for (int i = 0; i < booksVirtualLength; i++) {
-            Book currentBook = books[i];
-            if (currentBook.getIsbn().equals(isbn)) {
-                result = Optional.of(currentBook);
-                break;
-            }
+        int targetIndex = indexOf(isbn);
+        if (targetIndex > -1) {
+            result = Optional.of(books[targetIndex]);
         }
         return result;
     }

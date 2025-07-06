@@ -40,7 +40,7 @@ public class ArrayListBookRepository implements BookRepository {
     public void delete(String isbn) {
         boolean success = books.removeIf(book -> book.getIsbn().equals(isbn));
         if (!success) {
-            throw new BookNotFoundException("Book with isbn %s is not registered or does not exist.");
+            throw new BookNotFoundException(String.format("Book with isbn %s is not registered or does not exist.", isbn));
         }
     }
 }
