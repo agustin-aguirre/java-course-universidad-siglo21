@@ -15,8 +15,8 @@ public class ArrayBookRepository implements BookRepository {
     private int booksVirtualLength = 0;
     private int firstEmptyPosition = 0;
 
-    public ArrayBookRepository(BookFactory bookFactory) {
-        books = bookFactory.create(10).toArray(Book[]::new);
+    public ArrayBookRepository(Collection<Book> initialBooks) {
+        books = initialBooks.toArray(Book[]::new);
     }
 
     @Override

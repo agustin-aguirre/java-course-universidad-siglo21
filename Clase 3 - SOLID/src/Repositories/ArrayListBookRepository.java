@@ -13,8 +13,8 @@ public class ArrayListBookRepository implements BookRepository {
 
     private final ArrayList<Book> books;
 
-    public ArrayListBookRepository(BookFactory bookFactory) {
-        books = new ArrayList<Book>(bookFactory.create(10));
+    public ArrayListBookRepository(Collection<Book> initialBooks) {
+        books = new ArrayList<>(initialBooks);
     }
 
     @Override
