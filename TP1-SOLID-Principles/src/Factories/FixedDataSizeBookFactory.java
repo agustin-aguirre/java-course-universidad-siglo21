@@ -1,7 +1,6 @@
 package Factories;
 
 import Models.Book;
-import Models.BookBase;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,7 +56,7 @@ public class FixedDataSizeBookFactory implements BookFactory {
         return createBookWithDataAtIndex(random.nextInt(dataSize));
     }
 
-    public Collection<Book> create(int amount) throws IllegalArgumentException {
+    public Collection<Book> create(int amount) {
         if (amount < 0) {
             throw new IllegalArgumentException("Amount cannot be less than 0");
         }
@@ -71,7 +70,7 @@ public class FixedDataSizeBookFactory implements BookFactory {
     }
 
     private Book createBookWithDataAtIndex(int index) {
-        return new BookBase(
+        return new Book(
                 UUID.randomUUID().toString(),
                 titles[index],
                 authors[index],

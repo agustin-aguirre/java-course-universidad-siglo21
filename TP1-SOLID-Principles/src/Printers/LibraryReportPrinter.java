@@ -1,7 +1,7 @@
 package Printers;
 
-import Models.Book;
 import Exceptions.LibraryException;
+import Models.Book;
 
 import java.util.Arrays;
 

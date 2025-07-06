@@ -1,10 +1,8 @@
 package Services.Finders;
 
-import Exceptions.InvalidBookFieldException;
 import Filters.BookFilter;
 import Models.Book;
 import Repositories.BookRepository;
-import Validators.Validator;
 
 import java.util.Collection;
 import java.util.Optional;

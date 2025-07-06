@@ -6,5 +6,5 @@ import java.util.Collection;
 
 public interface BookFactory {
     Book create();
-    Collection<Book> create(int amount) throws IllegalArgumentException;
+    Collection<Book> create(int amount);
 }

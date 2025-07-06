@@ -1,5 +1,6 @@
 import Exceptions.*;
 import Factories.BookFactory;
+import Factories.EBookFactory;
 import Factories.FixedDataSizeBookFactory;
 import Models.Book;
 import Printers.LibraryReportPrinter;
@@ -17,16 +18,17 @@ import java.util.function.Function;
 public class Main {
 
     public static void main(String[] args) {
-        var factory = new FixedDataSizeBookFactory();
+        var bookFactory = new FixedDataSizeBookFactory();
+        var ebookFactory = new EBookFactory();
         var printer = new LibraryReportPrinter();
 
         // demo with array repository
-        var arrayDemoLibrary = createDemoLibrary(new ArrayBookRepository(factory.create(50)));
-        runLibraryDemo(arrayDemoLibrary, factory, printer, "===============Array===============");
+        var arrayDemoLibrary = createDemoLibrary(new ArrayBookRepository(bookFactory.create(50)));
+        runLibraryDemo(arrayDemoLibrary, ebookFactory, printer, "===============Array===============");
 
         // demo with arrayList repository
-        var arrayListDemoLibrary = createDemoLibrary(new ArrayListBookRepository(factory.create(50)));
-        runLibraryDemo(arrayListDemoLibrary, factory, printer, "=============ArrayList=============");
+        var arrayListDemoLibrary = createDemoLibrary(new ArrayListBookRepository(ebookFactory.create(50)));
+        runLibraryDemo(arrayListDemoLibrary, bookFactory, printer, "=============ArrayList=============");
     }
 
     private static Library createDemoLibrary(BookRepository bookRepo) {
