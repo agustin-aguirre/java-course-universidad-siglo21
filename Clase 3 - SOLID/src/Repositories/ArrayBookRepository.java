@@ -7,6 +7,7 @@ import Models.Book;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ArrayBookRepository implements BookRepository {
@@ -16,7 +17,11 @@ public class ArrayBookRepository implements BookRepository {
     private int firstEmptyPosition = 0;
 
     public ArrayBookRepository(Collection<Book> initialBooks) {
-        books = initialBooks.toArray(Book[]::new);
+        var initialBooksArray = initialBooks.toArray(Book[]::new);
+        int initialBooksArrayLength = initialBooksArray.length;
+        books = Arrays.copyOf(initialBooksArray, initialBooksArrayLength + 10);
+        booksVirtualLength = initialBooksArrayLength;
+        firstEmptyPosition = initialBooksArrayLength;
     }
 
     @Override
@@ -44,8 +49,9 @@ public class ArrayBookRepository implements BookRepository {
     public Optional<Book> get(String isbn) {
         Optional<Book> result = Optional.empty();
         for (int i = 0; i < booksVirtualLength; i++) {
-            if (books[i].getIsbn().equals(isbn)) {
-                result = Optional.of(books[i]);
+            Book currentBook = books[i];
+            if (currentBook.getIsbn().equals(isbn)) {
+                result = Optional.of(currentBook);
                 break;
             }
         }
@@ -54,7 +60,7 @@ public class ArrayBookRepository implements BookRepository {
 
     @Override
     public Collection<Book> getAll() {
-        return Arrays.asList(books);
+        return Arrays.stream(books).filter(Objects::nonNull).toList();
     }
 
     @Override
