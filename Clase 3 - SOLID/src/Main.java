@@ -7,9 +7,7 @@ import Printers.ReportPrinter;
 import Repositories.ArrayBookRepository;
 import Repositories.ArrayListBookRepository;
 import Repositories.BookRepository;
-import Services.Finders.BookFinder;
 import Services.Finders.SimpleBookFinder;
-import Services.LoanManagers.LoanManager;
 import Services.LoanManagers.SimpleLoanManager;
 
 import java.util.Arrays;
@@ -21,31 +19,27 @@ public class Main {
     public static void main(String[] args) {
         var factory = new FixedDataSizeBookFactory();
         var printer = new LibraryReportPrinter();
-        runDemoWithArray(factory, printer);
-        printer.println("");
-        runDemoWithArrayList(factory, printer);
+
+        // demo with array repository
+        var arrayDemoLibrary = createDemoLibrary(new ArrayBookRepository(factory.create(50)));
+        runLibraryDemo(arrayDemoLibrary, factory, printer, "===============Array===============");
+
+        // demo with arrayList repository
+        var arrayListDemoLibrary = createDemoLibrary(new ArrayListBookRepository(factory.create(50)));
+        runLibraryDemo(arrayListDemoLibrary, factory, printer, "=============ArrayList=============");
     }
 
-    private static void runDemoWithArray(BookFactory factory, ReportPrinter printer) {
-        var bookRepo = new ArrayBookRepository(factory.create(50));
-        var demoTitle = "===============Array===============";
-        runDemoWithDependencies(factory, bookRepo, new SimpleBookFinder(bookRepo), new SimpleLoanManager(bookRepo), demoTitle, printer);
+    private static Library createDemoLibrary(BookRepository bookRepo) {
+        return new DemoLibrary(
+                bookRepo,
+                new SimpleBookFinder(bookRepo),
+                new SimpleLoanManager(bookRepo)
+        );
     }
 
-    private static void runDemoWithArrayList(BookFactory factory, ReportPrinter printer) {
-        var bookRepo = new ArrayListBookRepository(factory.create(50));
-        var demoTitle = "=============ArrayList=============";
-        runDemoWithDependencies(factory, bookRepo, new SimpleBookFinder(bookRepo), new SimpleLoanManager(bookRepo), demoTitle, printer);
-    }
+    private static void runLibraryDemo(Library library, BookFactory factory, ReportPrinter printer, String header) {
+        printer.println(header);
 
-    private static void runDemoWithDependencies(BookFactory factory, BookRepository bookRepo, BookFinder bookFinder, LoanManager loanManager, String demoTitle, ReportPrinter printer) {
-        var library = new DemoLibrary(bookRepo, bookFinder, loanManager);
-        printer.println(demoTitle);
-        runLibraryDemo(library, factory, printer);
-        printer.println("===================================");
-    }
-
-    private static void runLibraryDemo(Library library, BookFactory factory, ReportPrinter printer) {
         printer.println("Showing all books from Jorge Luis Borges:");
         var borgesBooks = library.getBooksFromAuthor("Jorge Luis Borges").toArray(Book[]::new);
         printer.println(borgesBooks);
@@ -106,6 +100,8 @@ public class Main {
         trySetField(newRandomBook, b -> b::setTitle, "", printer);
         printer.println("\tPublishing Year = -1: ");
         trySetField(newRandomBook, b -> b::setYearPublished, -1, printer);
+
+        printer.println("===================================\n");
     }
 
     private static <T> void trySetField(Book book, Function<Book, Consumer<T>> objectSetter, T value, ReportPrinter printer) {
