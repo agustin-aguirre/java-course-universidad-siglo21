@@ -8,7 +8,7 @@ public class SimpleLoanManager implements LoanManager {
 
     private final BookRepository bookRepo;
 
-    private final static String NOT_FOUND_TEMPLATE_MSG = "Book with ISBN %s couldn't be found.";
+    private static final String BOOK_NOT_FOUND_TEMPLATE_MSG = "Book with isbn %s is not registered or does not exist.";
     private final static String ALREADY_LENDED_TEMPLATE_MSG = "Book with ISBN %s is already lended.";
 
     public SimpleLoanManager(BookRepository repo) {
@@ -25,7 +25,7 @@ public class SimpleLoanManager implements LoanManager {
                 book.setIsAvailable(false);
             },
             () -> {
-                throw new BookNotFoundException(String.format(NOT_FOUND_TEMPLATE_MSG, isbn));
+                throw new BookNotFoundException(String.format(BOOK_NOT_FOUND_TEMPLATE_MSG, isbn));
             }
         );
     }
@@ -39,7 +39,7 @@ public class SimpleLoanManager implements LoanManager {
                 }
             },
             () -> {
-                throw new BookNotFoundException(String.format(NOT_FOUND_TEMPLATE_MSG, isbn));
+                throw new BookNotFoundException(String.format(BOOK_NOT_FOUND_TEMPLATE_MSG, isbn));
             }
         );
     }
