@@ -1,4 +1,4 @@
-package Services;
+package Services.Finders;
 
 import Filters.BookFilter;
 import Models.Book;
