@@ -1,5 +1,8 @@
 package Repositories;
 
+import Exceptions.BookNotFoundException;
+import Exceptions.DuplicatedIsbnException;
+import Filters.BookFilter;
 import Models.Book;
 
 import java.util.Collection;
@@ -9,5 +12,6 @@ public interface BookRepository {
     void add(Book newBook);
     Optional<Book> get(String isbn);
     Collection<Book> getAll();
-    boolean delete(String isbn);
+    Collection<Book> filter(BookFilter condition);
+    void delete(String isbn);
 }

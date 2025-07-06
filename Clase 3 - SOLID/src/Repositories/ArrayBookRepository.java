@@ -1,13 +1,14 @@
 package Repositories;
 
+import Exceptions.BookNotFoundException;
+import Exceptions.DuplicatedIsbnException;
 import Factories.BookFactory;
+import Filters.BookFilter;
 import Models.Book;
-import Services.Exceptions.LibraryException;
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.UUID;
 
 public class ArrayBookRepository implements BookRepository {
 
@@ -21,17 +22,24 @@ public class ArrayBookRepository implements BookRepository {
 
     @Override
     public void add(Book newBook) {
-        if (booksVirtualLength == books.length - 1) {
-            books = Arrays.copyOf(books, booksVirtualLength + 100);
+        if (get(newBook.getIsbn()).isPresent()) {
+            throw new DuplicatedIsbnException("");
         }
-        newBook.setIsbn(UUID.randomUUID().toString());
+
         books[firstEmptyPosition] = newBook;
         booksVirtualLength += 1;
-        for (int i = (firstEmptyPosition + 1); i < books.length; i++) {
-            if (books[i] == null) {
-                firstEmptyPosition = i;
-                break;
+
+        if (booksVirtualLength < books.length) {
+            for (int i = (firstEmptyPosition + 1); i < books.length; i++) {
+                if (books[i] == null) {
+                    firstEmptyPosition = i;
+                    break;
+                }
             }
+        }
+        else {
+            books = Arrays.copyOf(books, books.length +10);
+            firstEmptyPosition = booksVirtualLength;
         }
     }
 
@@ -53,7 +61,24 @@ public class ArrayBookRepository implements BookRepository {
     }
 
     @Override
-    public boolean delete(String isbn) throws LibraryException {
+    public Collection<Book> filter(BookFilter condition) {
+        return getAll().stream()
+                .filter(condition::check)
+                .toList();
+    }
+
+    @Override
+    public void delete(String isbn) {
+        int targetIndex = indexOf(isbn);
+        if (targetIndex == -1) {
+            throw new BookNotFoundException("");
+        }
+        books[targetIndex] = null;
+        booksVirtualLength -= 1;
+        firstEmptyPosition = Math.min(targetIndex, firstEmptyPosition);
+    }
+
+    private int indexOf(String isbn) {
         int targetIndex = -1;
         for (int i = 0; i < booksVirtualLength; i++) {
             if (books[i].getIsbn().equals(isbn)) {
@@ -61,10 +86,6 @@ public class ArrayBookRepository implements BookRepository {
                 break;
             }
         }
-        if (targetIndex == -1) return false;
-        books[targetIndex] = null;
-        booksVirtualLength -= 1;
-        firstEmptyPosition = Math.min(targetIndex, firstEmptyPosition);
-        return true;
+        return targetIndex;
     }
 }

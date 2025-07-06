@@ -1,23 +1,14 @@
-package Repositories;// ● Repositorio de Libros (Repositories.BookRepository)
-//  ○ Debe ser una interfaz con métodos para:
-//      ■ Agregar un libro (validando ISBN único).
-//      ■ Eliminar un libro por ISBN.
-//      ■ Buscar un libro por ISBN.
-//      ■ Listar todos los libros.
-//
-//  ○ Implementar dos versiones usando:
-//      ■ ArrayList (Repositories.ArrayListBookRepository)
-//      ■ Arreglo estático (Repositories.ArrayBookRepository, con tamaño fijo y manejo de límites).
+package Repositories;
 
-
+import Exceptions.BookNotFoundException;
+import Exceptions.DuplicatedIsbnException;
 import Factories.BookFactory;
+import Filters.BookFilter;
 import Models.Book;
 
-import javax.management.openmbean.KeyAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Optional;
-import java.util.UUID;
 
 public class ArrayListBookRepository implements BookRepository {
 
@@ -28,12 +19,10 @@ public class ArrayListBookRepository implements BookRepository {
     }
 
     @Override
-    public void add(Book newBook) throws KeyAlreadyExistsException{
-        var exists = books.stream().anyMatch(book -> book.getIsbn().equals(newBook.getIsbn()));
-        if (exists) {
-            throw new KeyAlreadyExistsException();
+    public void add(Book newBook) {
+        if (get(newBook.getIsbn()).isPresent()) {
+            throw new DuplicatedIsbnException("");
         }
-        newBook.setIsbn(UUID.randomUUID().toString());
         books.addLast(newBook);
     }
 
@@ -50,7 +39,17 @@ public class ArrayListBookRepository implements BookRepository {
     }
 
     @Override
-    public boolean delete(String isbn) {
-        return books.removeIf(book -> book.getIsbn().equals(isbn));
+    public Collection<Book> filter(BookFilter condition) {
+        return getAll().stream()
+                .filter(condition::check)
+                .toList();
+    }
+
+    @Override
+    public void delete(String isbn) {
+        boolean success = books.removeIf(book -> book.getIsbn().equals(isbn));
+        if (!success) {
+            throw new BookNotFoundException("");
+        }
     }
 }
