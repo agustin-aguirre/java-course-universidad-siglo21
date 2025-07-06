@@ -12,18 +12,13 @@ import java.util.Optional;
 public class SimpleBookFinder implements BookFinder {
 
     private final BookRepository bookRepo;
-    private final Validator<String> isbnValidator;
 
-    public SimpleBookFinder(BookRepository bookRepo, Validator<String> isbnValidator) {
+    public SimpleBookFinder(BookRepository bookRepo) {
         this.bookRepo = bookRepo;
-        this.isbnValidator = isbnValidator;
     }
 
     @Override
     public Optional<Book> findBookWithIsbn(String isbn) {
-        if (!isbnValidator.check(isbn)) {
-            throw new InvalidBookFieldException("");
-        }
         return bookRepo.get(isbn);
     }
 
