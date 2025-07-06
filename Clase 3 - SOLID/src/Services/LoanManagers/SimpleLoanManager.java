@@ -1,4 +1,4 @@
-package Services.Loans;
+package Services.LoanManagers;
 
 import Repositories.BookRepository;
 import Exceptions.BookLendedException;

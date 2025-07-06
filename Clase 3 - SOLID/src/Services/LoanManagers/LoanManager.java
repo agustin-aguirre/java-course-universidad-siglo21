@@ -1,4 +1,4 @@
-package Services.Loans;
+package Services.LoanManagers;
 
 public interface LoanManager {
     void lendBook(String isbn);
