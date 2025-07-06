@@ -1,24 +1,14 @@
 import Exceptions.*;
-import Factories.BookFactory;
-import Factories.EBookFactory;
-import Factories.FixedDataSizeBookFactory;
+
 import Filters.AuthorFilter;
 import Filters.AvailabilityFilter;
 import Models.Book;
 import Models.EBook;
 import Printers.LibraryReportPrinter;
-import Printers.ReportPrinter;
 import Repositories.ArrayBookRepository;
 import Repositories.ArrayListBookRepository;
-import Repositories.BookRepository;
 import Services.Finders.SimpleBookFinder;
-import Services.LoanManagers.LoanManager;
 import Services.LoanManagers.SimpleLoanManager;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.function.Consumer;
-import java.util.function.Function;
 
 public class Main {
 
