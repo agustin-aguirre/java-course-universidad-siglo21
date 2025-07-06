@@ -1,13 +1,8 @@
-package Services;
-// ● Gestión de Préstamos (Services.LoanManager)
-// ○ Debe permitir:
-//        ■Prestar un libro (marcar como no disponible).
-//        ■Devolver un libro (marcar como disponible).
-//        ■Validar reglas (ej: no prestar un libro ya prestado).
+package Services.Loans;
 
 import Repositories.BookRepository;
-import Services.Exceptions.BookLendedException;
-import Services.Exceptions.BookNotFoundException;
+import Exceptions.BookLendedException;
+import Exceptions.BookNotFoundException;
 
 public class SimpleLoanManager implements LoanManager {
 
@@ -21,7 +16,7 @@ public class SimpleLoanManager implements LoanManager {
     }
 
     @Override
-    public void lendBook(String isbn) throws BookNotFoundException, BookLendedException {
+    public void lendBook(String isbn) {
         bookRepo.get(isbn).ifPresentOrElse(
             book -> {
                 if (!book.isAvailable()) {
@@ -36,7 +31,7 @@ public class SimpleLoanManager implements LoanManager {
     }
 
     @Override
-    public void returnBook(String isbn) throws BookNotFoundException {
+    public void returnBook(String isbn) {
         bookRepo.get(isbn).ifPresentOrElse(
             book -> {
                 if (!book.isAvailable()) {
