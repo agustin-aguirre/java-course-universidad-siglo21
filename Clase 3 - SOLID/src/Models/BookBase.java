@@ -2,6 +2,7 @@ package Models;
 
 import Exceptions.InvalidBookFieldException;
 import Validators.IntBiggerThanOrEqualToCeroValidator;
+import Validators.IsbnValidator;
 import Validators.StringNotNullNorEmptyValidator;
 import Validators.Validator;
 
@@ -30,7 +31,7 @@ public class BookBase implements Book {
 
     @Override
     public void setIsbn(String isbn) throws IllegalArgumentException {
-        assertFieldIsValid(isbn, new StringNotNullNorEmptyValidator(), "ISBN");
+        assertFieldIsValid(isbn, new IsbnValidator(), "ISBN");
         this.isbn = isbn;
     }
 
