@@ -1,12 +1,7 @@
 @startuml
-interface Factories.BookFactory {
-~ Book create()
-~ Collection<Book> create(int)
-}
-
-class Models.BookBase {
-- {static} String ILLEGAL_ARGUMENT_TEMPLATE_MSG
-- {static} String TO_STRING_TEMPLATE
+class Models.Book {
+# {static} String ILLEGAL_ARGUMENT_TEMPLATE_MSG
+# {static} String TO_STRING_TEMPLATE
 - String isbn
 - String title
 - String author
@@ -23,94 +18,11 @@ class Models.BookBase {
 + boolean isAvailable()
 + void setIsAvailable(boolean)
 + String toString()
-- void assertFieldIsValid(T,Validator<T>,String)
+# void assertStringFieldIsValid(String,String)
+# void assertFieldIsValid(T,Predicate<T>,String)
+# String getFieldsString()
 }
 
-
-class Validators.IntBiggerThanOrEqualToCeroValidator {
-+ boolean check(Integer)
-}
-
-class Exceptions.BookAlreadyLendedException {
-}
-class Repositories.ArrayListBookRepository {
-- ArrayList<Book> books
-+ void add(Book)
-+ Optional<Book> get(String)
-+ Collection<Book> getAll()
-+ void delete(String)
-}
-
-
-interface Validators.Validator {
-~ boolean check(T)
-}
-
-interface Library {
-~ void addBook(Book)
-~ void deleteBook(String)
-~ void lendBook(String)
-~ void returnBook(String)
-~ Optional<Book> findBookWithIsbn(String)
-~ Collection<Book> getBooksFromAuthor(String)
-~ Collection<Book> getBooksByAvailability(boolean)
-~ Collection<Book> getBooksPublishedAtYear(int)
-}
-
-interface Printers.ReportPrinter {
-~ void println(String)
-~ void println(Book[])
-~ void printErr(LibraryException)
-~ void printlnf(String,Object)
-}
-
-class Factories.FixedDataSizeBookFactory {
-- int dataSize
-- Random random
-- String[] authors
-- String[] titles
-- int[] publicationYears
-+ Book create()
-+ Collection<Book> create(int)
-- Book createBookWithDataAtIndex(int)
-}
-
-
-class Filters.PublicationYearFilter {
-- int year
-+ boolean check(Book)
-}
-
-
-class Exceptions.BookNotFoundException {
-}
-class DemoLibrary {
-- BookRepository bookRepo
-- BookFinder bookFinder
-- LoanManager loanManager
-+ void addBook(Book)
-+ void deleteBook(String)
-+ void lendBook(String)
-+ void returnBook(String)
-+ Optional<Book> findBookWithIsbn(String)
-+ Collection<Book> getBooksFromAuthor(String)
-+ Collection<Book> getBooksByAvailability(boolean)
-+ Collection<Book> getBooksPublishedAtYear(int)
-}
-
-
-class Validators.StringNotNullNorEmptyValidator {
-+ boolean check(String)
-}
-
-class Exceptions.DuplicatedBookException {
-}
-class Printers.LibraryReportPrinter {
-+ void println(String)
-+ void println(Book[])
-+ void printErr(LibraryException)
-+ void printlnf(String,Object)
-}
 
 class Services.Finders.SimpleBookFinder {
 - BookRepository bookRepo
@@ -118,6 +30,14 @@ class Services.Finders.SimpleBookFinder {
 + Collection<Book> filterBooks(BookFilter)
 }
 
+
+interface Printers.ReportPrinter {
+~ void println(String)
+~ void println(Book[])
+~ void println(Collection<Book>)
+~ void printErr(LibraryException)
+~ void printlnf(String,Object)
+}
 
 class Repositories.ArrayBookRepository {
 - Book[] books
@@ -131,28 +51,65 @@ class Repositories.ArrayBookRepository {
 }
 
 
+interface Services.Finders.BookFinder {
+~ Optional<Book> findBookWithIsbn(String)
+~ Collection<Book> filterBooks(BookFilter)
+}
+
 class Main {
 + {static} void main(String[])
-- {static} Library createDemoLibrary(BookRepository)
-- {static} void runLibraryDemo(Library,BookFactory,ReportPrinter,String)
-- {static} void trySetField(Book,Function<Book,Consumer<T>>,T,ReportPrinter)
 }
 
 class Exceptions.InvalidBookFieldException {
 }
-class Filters.AvailabilityFilter {
-- boolean shouldBeAvailable
+class Filters.PublicationYearFilter {
+- int year
++ boolean check(Book)
+}
+
+
+class Services.LoanManagers.SimpleLoanManager {
+- {static} String BOOK_NOT_FOUND_TEMPLATE_MSG
+- {static} String ALREADY_LENDED_TEMPLATE_MSG
+- BookRepository bookRepo
++ void lendBook(String)
++ void returnBook(String)
+}
+
+
+class Exceptions.BookNotFoundException {
+}
+class Models.EBook {
+- {static} String[] SUPPORTED_FORMATS
+- String format
++ String getFormat()
++ void setFormat(String)
+# String getFieldsString()
+}
+
+
+class Printers.LibraryReportPrinter {
++ void println(String)
++ void println(Book[])
++ void println(Collection<Book>)
++ void printErr(LibraryException)
++ void printlnf(String,Object)
+}
+
+interface Filters.BookFilter {
+~ boolean check(Book)
+}
+
+class Exceptions.DuplicatedBookException {
+}
+class Filters.AuthorFilter {
+- String author
 + boolean check(Book)
 }
 
 
 class Exceptions.InvalidIsbnException {
 }
-interface Services.Finders.BookFinder {
-~ Optional<Book> findBookWithIsbn(String)
-~ Collection<Book> filterBooks(BookFilter)
-}
-
 interface Repositories.BookRepository {
 ~ void add(Book)
 ~ Optional<Book> get(String)
@@ -165,65 +122,40 @@ interface Services.LoanManagers.LoanManager {
 ~ void returnBook(String)
 }
 
-class Filters.AuthorFilter {
-- String author
+class Exceptions.LibraryException {
+}
+class Exceptions.BookAlreadyLendedException {
+}
+class Filters.AvailabilityFilter {
+- boolean shouldBeAvailable
 + boolean check(Book)
 }
 
 
-class Validators.IsbnValidator {
-+ boolean check(String)
-- boolean isValidUuid(String)
-}
-
-interface Models.Book {
-~ String getIsbn()
-~ void setIsbn(String)
-~ String getTitle()
-~ void setTitle(String)
-~ String getAuthor()
-~ void setAuthor(String)
-~ int getYearPublished()
-~ void setYearPublished(int)
-~ boolean isAvailable()
-~ void setIsAvailable(boolean)
-}
-
-interface Filters.BookFilter {
-~ boolean check(Book)
-}
-
-class Services.LoanManagers.SimpleLoanManager {
-- {static} String BOOK_NOT_FOUND_TEMPLATE_MSG
-- {static} String ALREADY_LENDED_TEMPLATE_MSG
-- BookRepository bookRepo
-+ void lendBook(String)
-+ void returnBook(String)
+class Repositories.ArrayListBookRepository {
+- ArrayList<Book> books
++ void add(Book)
++ Optional<Book> get(String)
++ Collection<Book> getAll()
++ void delete(String)
 }
 
 
-class Exceptions.LibraryException {
-}
 
 
-Models.Book <|.. Models.BookBase
-Validators.Validator <|.. Validators.IntBiggerThanOrEqualToCeroValidator
-Exceptions.LibraryException <|-- Exceptions.BookAlreadyLendedException
-Repositories.BookRepository <|.. Repositories.ArrayListBookRepository
-Factories.BookFactory <|.. Factories.FixedDataSizeBookFactory
-Filters.BookFilter <|.. Filters.PublicationYearFilter
-Exceptions.LibraryException <|-- Exceptions.BookNotFoundException
-Library <|.. DemoLibrary
-Validators.Validator <|.. Validators.StringNotNullNorEmptyValidator
-Exceptions.LibraryException <|-- Exceptions.DuplicatedBookException
-Printers.ReportPrinter <|.. Printers.LibraryReportPrinter
 Services.Finders.BookFinder <|.. Services.Finders.SimpleBookFinder
 Repositories.BookRepository <|.. Repositories.ArrayBookRepository
 Exceptions.LibraryException <|-- Exceptions.InvalidBookFieldException
-Filters.BookFilter <|.. Filters.AvailabilityFilter
-Exceptions.LibraryException <|-- Exceptions.InvalidIsbnException
-Filters.BookFilter <|.. Filters.AuthorFilter
-Validators.StringNotNullNorEmptyValidator <|-- Validators.IsbnValidator
+Filters.BookFilter <|.. Filters.PublicationYearFilter
 Services.LoanManagers.LoanManager <|.. Services.LoanManagers.SimpleLoanManager
+Exceptions.LibraryException <|-- Exceptions.BookNotFoundException
+Models.Book <|-- Models.EBook
+Printers.ReportPrinter <|.. Printers.LibraryReportPrinter
+Exceptions.LibraryException <|-- Exceptions.DuplicatedBookException
+Filters.BookFilter <|.. Filters.AuthorFilter
+Exceptions.LibraryException <|-- Exceptions.InvalidIsbnException
 Exceptions.RuntimeException <|-- Exceptions.LibraryException
+Exceptions.LibraryException <|-- Exceptions.BookAlreadyLendedException
+Filters.BookFilter <|.. Filters.AvailabilityFilter
+Repositories.BookRepository <|.. Repositories.ArrayListBookRepository
 @enduml
